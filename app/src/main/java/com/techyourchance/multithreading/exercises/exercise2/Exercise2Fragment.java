@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class Exercise2Fragment extends BaseFragment {
 
     public static Fragment newInstance() {
@@ -22,11 +24,13 @@ public class Exercise2Fragment extends BaseFragment {
     }
 
     private byte[] mDummyData;
+    private AtomicBoolean mAtomicBoolean;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mDummyData = new byte[50 * 1000 * 1000];
+        mAtomicBoolean = new AtomicBoolean(true);
         return inflater.inflate(R.layout.fragment_exercise_2, container, false);
     }
 
@@ -39,6 +43,7 @@ public class Exercise2Fragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
+        mAtomicBoolean.set(false);
     }
 
     @Override
@@ -51,7 +56,7 @@ public class Exercise2Fragment extends BaseFragment {
             @Override
             public void run() {
                 int screenTimeSeconds = 0;
-                while (true) {
+                while (mAtomicBoolean.get()) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
