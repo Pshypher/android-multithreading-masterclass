@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Android Multithreading</string>
+    <string name="msg_done">done</string>
 </resources>
