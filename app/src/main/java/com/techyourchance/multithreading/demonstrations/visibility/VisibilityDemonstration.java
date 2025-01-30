@@ -2,7 +2,7 @@ package com.techyourchance.multithreading.demonstrations.visibility;
 
 public class VisibilityDemonstration {
 
-    private static int sCount = 0;
+    private volatile static int sCount = 0;
 
     public static void main(String[] args) {
         new Consumer().start();
@@ -19,11 +19,12 @@ public class VisibilityDemonstration {
         public void run() {
             int localValue = -1;
             while (true) {
-                if (localValue != sCount) {
-                    System.out.println("Consumer: detected count change " + sCount);
-                    localValue = sCount;
+                int sampledValue = sCount;
+                if (localValue != sampledValue) {
+                    System.out.println("Consumer: detected count change " + sampledValue);
+                    localValue = sampledValue;
                 }
-                if (sCount >= 5) {
+                if (sampledValue >= 5) {
                     break;
                 }
             }
