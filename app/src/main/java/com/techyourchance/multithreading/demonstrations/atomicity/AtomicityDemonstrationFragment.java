@@ -33,9 +33,9 @@ public class AtomicityDemonstrationFragment extends BaseFragment {
     private Button mBtnStartCount;
     private TextView mTxtFinalCount;
 
-    private Handler mUiHandler = new Handler(Looper.getMainLooper());
+    private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
-    private volatile AtomicInteger mCount = new AtomicInteger();
+    private final AtomicInteger mCount = new AtomicInteger();
 
     @Nullable
     @Override
