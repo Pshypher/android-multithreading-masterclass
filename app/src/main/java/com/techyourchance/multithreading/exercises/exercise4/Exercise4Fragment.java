@@ -17,35 +17,40 @@ import com.techyourchance.multithreading.R;
 import com.techyourchance.multithreading.common.BaseFragment;
 
 import java.math.BigInteger;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.fragment.app.Fragment;
 
-public class Exercise4Fragment extends BaseFragment {
+
+public class  Exercise4Fragment extends BaseFragment {
+
+    private static final Object LOCK = new Object();
 
     public static Fragment newInstance() {
         return new Exercise4Fragment();
     }
 
-    private static int MAX_TIMEOUT_MS = DefaultConfiguration.DEFAULT_FACTORIAL_TIMEOUT_MS;
+    private static final int MAX_TIMEOUT_MS = DefaultConfiguration.DEFAULT_FACTORIAL_TIMEOUT_MS;
 
-    private Handler mUiHandler = new Handler(Looper.getMainLooper());
+    private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
+    // UI Thread
     private EditText mEdtArgument;
     private EditText mEdtTimeout;
     private Button mBtnStartWork;
     private TextView mTxtResult;
 
-    private int mNumberOfThreads;
-    private ComputationRange[] mThreadsComputationRanges;
-    private BigInteger[] mThreadsComputationResults;
-    private int mNumOfFinishedThreads;
+    private int mNumberOfThreads;   // safe
+    private ComputationRange[] mThreadsComputationRanges;   // safe
+    private BigInteger[] mThreadsComputationResults;    // manual synchronization
+    private final AtomicInteger mNumOfFinishedThreads = new AtomicInteger(0);   // safe
 
-    private long mComputationTimeoutTime;
+    private long mComputationTimeoutTime;   // safe
 
-    private boolean mAbortComputation;
+    private volatile boolean mAbortComputation; // safe
 
     @Nullable
     @Override
@@ -121,8 +126,6 @@ public class Exercise4Fragment extends BaseFragment {
         mNumberOfThreads = factorialArgument < 20
                 ? 1 : Runtime.getRuntime().availableProcessors();
 
-        mNumOfFinishedThreads = 0;
-
         mAbortComputation = false;
 
         mThreadsComputationResults = new BigInteger[mNumberOfThreads];
@@ -168,8 +171,10 @@ public class Exercise4Fragment extends BaseFragment {
                         }
                         product = product.multiply(new BigInteger(String.valueOf(num)));
                     }
-                    mThreadsComputationResults[threadIndex] = product;
-                    mNumOfFinishedThreads++;
+                    synchronized (LOCK) {
+                        mThreadsComputationResults[threadIndex] = product;
+                    }
+                    mNumOfFinishedThreads.getAndIncrement();
                 }
             }).start();
 
@@ -179,9 +184,9 @@ public class Exercise4Fragment extends BaseFragment {
     @WorkerThread
     private void waitForThreadsResultsOrTimeoutOrAbort() {
         while (true) {
-            if (mNumOfFinishedThreads == mNumberOfThreads) {
+            if (mNumOfFinishedThreads.get() == mNumberOfThreads) {
                 break;
-            } else if(mAbortComputation) {
+            } else if (mAbortComputation) {
                 break;
             } else if (isTimedOut()) {
                 break;
@@ -227,11 +232,13 @@ public class Exercise4Fragment extends BaseFragment {
     @WorkerThread
     private BigInteger computeFinalResult() {
         BigInteger result = new BigInteger("1");
-        for (int i = 0; i < mNumberOfThreads; i++) {
-            if (isTimedOut()) {
-                break;
+        synchronized (LOCK) {
+            for (int i = 0; i < mNumberOfThreads; i++) {
+                if (isTimedOut()) {
+                    break;
+                }
+                result = result.multiply(mThreadsComputationResults[i]);
             }
-            result = result.multiply(mThreadsComputationResults[i]);
         }
         return result;
     }
@@ -242,7 +249,7 @@ public class Exercise4Fragment extends BaseFragment {
 
     private static class ComputationRange {
         private long start;
-        private long end;
+        private final long end;
 
         public ComputationRange(long start, long end) {
             this.start = start;
