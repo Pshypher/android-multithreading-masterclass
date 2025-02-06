@@ -2,8 +2,6 @@ package com.techyourchance.multithreading.demonstrations.visibility;
 
 public class VisibilityDemonstration {
 
-    private static final Object LOCK = new Object();
-
     private static int sCount = 0;
 
     public static void main(String[] args) {
@@ -13,7 +11,10 @@ public class VisibilityDemonstration {
         } catch (InterruptedException e) {
             return;
         }
-        new Producer().start();
+
+        Thread producer = new Producer();
+        producer.start();
+        producer.interrupt();
     }
 
     static class Consumer extends Thread {
@@ -21,14 +22,12 @@ public class VisibilityDemonstration {
         public void run() {
             int localValue = -1;
             while (true) {
-                synchronized (LOCK) {
-                    if (localValue != sCount) {
-                        System.out.println("Consumer: detected count change " + sCount);
-                        localValue = sCount;
-                    }
-                    if (sCount >= 5) {
-                        break;
-                    }
+                if (localValue != sCount) {
+                    System.out.println("Consumer: detected count change " + sCount);
+                    localValue = sCount;
+                }
+                if (sCount >= 5) {
+                    break;
                 }
             }
             System.out.println("Consumer: terminating");
@@ -38,19 +37,15 @@ public class VisibilityDemonstration {
     static class Producer extends Thread {
         @Override
         public void run() {
-            while (true) {
-                synchronized (LOCK) {
-                    if (sCount >= 5) {
-                        break;
-                    }
-                    int localValue = sCount;
-                    localValue++;
-                    System.out.println("Producer: incrementing count to " + localValue);
-                    sCount = localValue;
-                }
+            while (sCount < 5) {
+                int localValue = sCount;
+                localValue++;
+                System.out.println("Producer: incrementing count to " + localValue);
+                sCount = localValue;
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
+                    System.out.println("Producer: interrupted while sleeping");
                     return;
                 }
             }

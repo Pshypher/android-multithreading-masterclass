@@ -171,9 +171,11 @@ public class  Exercise4Fragment extends BaseFragment {
                         }
                         product = product.multiply(new BigInteger(String.valueOf(num)));
                     }
+
                     synchronized (LOCK) {
                         mThreadsComputationResults[threadIndex] = product;
                     }
+
                     mNumOfFinishedThreads.getAndIncrement();
                 }
             }).start();
