@@ -13,9 +13,10 @@ public abstract class BaseObservable<LISTENER_CLASS> {
 
     public void registerListener(LISTENER_CLASS listener) {
         synchronized (MONITOR) {
-            boolean hadNoListeners = mListeners.size() == 0;
+            boolean hadNoListeners = mListeners.isEmpty();
             mListeners.add(listener);
-            if (hadNoListeners && mListeners.size() == 1) {
+            if (hadNoListeners) {
+                mListeners.size();
                 onFirstListenerRegistered();
             }
         }
@@ -25,7 +26,7 @@ public abstract class BaseObservable<LISTENER_CLASS> {
         synchronized (MONITOR) {
             boolean hadOneListener = mListeners.size() == 1;
             mListeners.remove(listener);
-            if (hadOneListener && mListeners.size() == 0) {
+            if (hadOneListener && mListeners.isEmpty()) {
                 onLastListenerUnregistered();
             }
         }
