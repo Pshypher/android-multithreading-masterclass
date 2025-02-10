@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.techyourchance.multithreading.R;
-
 import androidx.annotation.NonNull;
+
+import com.techyourchance.multithreading.R;
 
 public class HomeArrayAdapter extends ArrayAdapter<ScreenReachableFromHome> {
 

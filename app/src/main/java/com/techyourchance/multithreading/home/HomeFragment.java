@@ -6,13 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.techyourchance.multithreading.common.BaseFragment;
-import com.techyourchance.multithreading.R;
-import com.techyourchance.multithreading.common.ScreensNavigator;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.techyourchance.multithreading.R;
+import com.techyourchance.multithreading.common.BaseFragment;
+import com.techyourchance.multithreading.common.ScreensNavigator;
 
 public class HomeFragment extends BaseFragment implements HomeArrayAdapter.Listener {
 

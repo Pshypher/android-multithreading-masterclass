@@ -2,12 +2,9 @@ package com.techyourchance.multithreading.exercises.exercise10
 
 import android.os.Handler
 import android.os.Looper
-
-import com.techyourchance.multithreading.common.BaseObservable
-
-import java.math.BigInteger
-
 import androidx.annotation.WorkerThread
+import com.techyourchance.multithreading.common.BaseObservable
+import java.math.BigInteger
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock

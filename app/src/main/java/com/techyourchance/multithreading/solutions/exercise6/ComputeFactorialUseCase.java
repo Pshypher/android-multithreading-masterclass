@@ -3,11 +3,11 @@ package com.techyourchance.multithreading.solutions.exercise6;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.WorkerThread;
+
 import com.techyourchance.multithreading.common.BaseObservable;
 
 import java.math.BigInteger;
-
-import androidx.annotation.WorkerThread;
 
 public class ComputeFactorialUseCase extends BaseObservable<ComputeFactorialUseCase.Listener> {
 

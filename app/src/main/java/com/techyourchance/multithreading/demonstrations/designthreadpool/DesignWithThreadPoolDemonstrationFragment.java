@@ -8,12 +8,12 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.techyourchance.multithreading.R;
-import com.techyourchance.multithreading.common.BaseFragment;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.techyourchance.multithreading.R;
+import com.techyourchance.multithreading.common.BaseFragment;
 
 public class DesignWithThreadPoolDemonstrationFragment extends BaseFragment implements ProducerConsumerBenchmarkUseCase.Listener {
 

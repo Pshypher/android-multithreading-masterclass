@@ -1,10 +1,6 @@
 package com.techyourchance.multithreading.demonstrations.designrxjava;
 
-import android.util.Log;
-
 import com.techyourchance.multithreading.DefaultConfiguration;
-
-import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;

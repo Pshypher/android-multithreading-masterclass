@@ -1,8 +1,5 @@
 package com.techyourchance.multithreading;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.Choreographer;
 import android.view.View;
@@ -10,9 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.techyourchance.fragmenthelper.FragmentContainerWrapper;
-import com.techyourchance.multithreading.common.ToolbarManipulator;
 import com.techyourchance.multithreading.common.ScreensNavigator;
+import com.techyourchance.multithreading.common.ToolbarManipulator;
 import com.techyourchance.multithreading.common.dependencyinjection.PresentationCompositionRoot;
 
 import java.lang.reflect.Field;

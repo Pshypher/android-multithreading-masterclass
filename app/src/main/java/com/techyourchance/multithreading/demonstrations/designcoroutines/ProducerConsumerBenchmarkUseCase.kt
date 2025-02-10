@@ -1,10 +1,14 @@
 package com.techyourchance.multithreading.demonstrations.designcoroutines
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import com.techyourchance.multithreading.DefaultConfiguration
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 
 class ProducerConsumerBenchmarkUseCase {

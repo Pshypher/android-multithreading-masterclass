@@ -1,12 +1,12 @@
 package com.techyourchance.multithreading.solutions.exercise8;
 
+import androidx.annotation.WorkerThread;
+
 import com.techyourchance.multithreading.common.BaseObservable;
 import com.techyourchance.threadposter.BackgroundThreadPoster;
 import com.techyourchance.threadposter.UiThreadPoster;
 
 import java.math.BigInteger;
-
-import androidx.annotation.WorkerThread;
 
 public class ComputeFactorialUseCase extends BaseObservable<ComputeFactorialUseCase.Listener> {
 

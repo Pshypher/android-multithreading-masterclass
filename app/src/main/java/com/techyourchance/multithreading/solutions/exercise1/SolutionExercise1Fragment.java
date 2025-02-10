@@ -7,12 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.techyourchance.multithreading.R;
-import com.techyourchance.multithreading.common.BaseFragment;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.techyourchance.multithreading.R;
+import com.techyourchance.multithreading.common.BaseFragment;
 
 public class SolutionExercise1Fragment extends BaseFragment {
 

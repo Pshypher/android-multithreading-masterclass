@@ -1,10 +1,10 @@
 package com.techyourchance.multithreading;
 
+import static kotlinx.coroutines.DispatchersKt.IO_PARALLELISM_PROPERTY_NAME;
+
 import android.app.Application;
 
 import com.techyourchance.multithreading.common.dependencyinjection.ApplicationCompositionRoot;
-
-import static kotlinx.coroutines.DispatchersKt.IO_PARALLELISM_PROPERTY_NAME;
 
 public class MyApplication extends Application {
 

@@ -4,10 +4,10 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.UiThread;
+
 import com.techyourchance.multithreading.DefaultConfiguration;
 import com.techyourchance.multithreading.common.BaseObservable;
-
-import androidx.annotation.UiThread;
 
 public class ProducerConsumerBenchmarkUseCase extends BaseObservable<ProducerConsumerBenchmarkUseCase.Listener> {
 

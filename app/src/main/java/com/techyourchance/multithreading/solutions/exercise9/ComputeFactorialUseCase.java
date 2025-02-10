@@ -1,13 +1,9 @@
 package com.techyourchance.multithreading.solutions.exercise9;
 
-import android.os.Handler;
-import android.os.Looper;
-
-import com.techyourchance.multithreading.common.BaseObservable;
+import androidx.annotation.WorkerThread;
 
 import java.math.BigInteger;
 
-import androidx.annotation.WorkerThread;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;

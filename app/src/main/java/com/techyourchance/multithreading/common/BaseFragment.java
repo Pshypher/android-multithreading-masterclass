@@ -3,14 +3,14 @@ package com.techyourchance.multithreading.common;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.techyourchance.fragmenthelper.HierarchicalFragment;
 import com.techyourchance.multithreading.MyApplication;
 import com.techyourchance.multithreading.common.dependencyinjection.PresentationCompositionRoot;
 import com.techyourchance.multithreading.home.HomeFragment;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 public abstract class BaseFragment extends Fragment implements HierarchicalFragment {
 
