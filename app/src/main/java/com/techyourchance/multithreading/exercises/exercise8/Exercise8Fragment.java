@@ -15,8 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.techyourchance.multithreading.DefaultConfiguration;
+import com.techyourchance.multithreading.MyApplication;
 import com.techyourchance.multithreading.R;
 import com.techyourchance.multithreading.common.BaseFragment;
+import com.techyourchance.multithreading.common.dependencyinjection.ApplicationCompositionRoot;
 
 import java.math.BigInteger;
 
@@ -38,7 +40,9 @@ public class Exercise8Fragment extends BaseFragment implements ComputeFactorialU
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mComputeFactorialUseCase = new ComputeFactorialUseCase();
+        ApplicationCompositionRoot root = ((MyApplication) requireActivity().getApplication())
+                .getApplicationCompositionRoot();
+        mComputeFactorialUseCase = new ComputeFactorialUseCase(root.getUiThreadPoster(), root.getBackgroundThreadPoster());
     }
 
     @Nullable
