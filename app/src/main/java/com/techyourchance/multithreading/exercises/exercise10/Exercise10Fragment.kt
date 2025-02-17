@@ -79,8 +79,12 @@ class Exercise10Fragment : BaseFragment() {
         return "Exercise 10"
     }
 
-    fun onFactorialComputed(result: String) {
-        txtResult.text = result
+    fun onFactorialComputed(result: ComputeFactorialUseCase.Result) {
+        if (result is ComputeFactorialUseCase.Result.Success) {
+            txtResult.text = result.factorial.toString()
+        } else {
+            txtResult.text = "Computation timed out"
+        }
         btnStartWork.isEnabled = true
     }
 

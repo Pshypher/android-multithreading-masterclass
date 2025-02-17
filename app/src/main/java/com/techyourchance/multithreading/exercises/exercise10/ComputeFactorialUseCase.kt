@@ -1,6 +1,5 @@
 package com.techyourchance.multithreading.exercises.exercise10
 
-import androidx.annotation.WorkerThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -13,104 +12,67 @@ import java.math.BigInteger
 
 class ComputeFactorialUseCase {
 
-    private var numberOfThreads: Int = 0
-    private var threadsComputationRanges: Array<ComputationRange?> = arrayOf()
+    sealed class Result {
+        data class Success(val factorial: BigInteger) : Result()
+        data object Timeout : Result()
+    }
 
-    private var computationTimeoutTime: Long = 0
-
-    suspend fun computeFactorial(argument: Int, timeout: Int): String {
+    suspend fun computeFactorial(argument: Int, timeout: Int): Result {
         return withContext(Dispatchers.IO) {
-            initComputationParams(argument, timeout)
+            val numberOfThreads = if (argument < 20)
+                1
+            else Runtime.getRuntime().availableProcessors();
+            val computationRanges = getThreadsComputationRanges(numberOfThreads, argument)
+
             try {
-                withTimeout(remainingMillisToTimeout()) {
-                    val deferredComputationResults = startComputation()
+                withTimeout(timeout.toLong()) {
+                    val deferredComputationResults = startComputation(computationRanges)
                     processComputationResults(deferredComputationResults.awaitAll())
                 }
             } catch (e: TimeoutCancellationException) {
-                "Computation timed out"
-
+                Result.Timeout
             }
         }
     }
 
-    private fun initComputationParams(factorialArgument: Int, timeout: Int) {
-        numberOfThreads = if (factorialArgument < 20)
-            1
-        else
-            Runtime.getRuntime().availableProcessors()
-
-        threadsComputationRanges = arrayOfNulls(numberOfThreads)
-
-        initThreadsComputationRanges(factorialArgument)
-
-        computationTimeoutTime = System.currentTimeMillis() + timeout
-    }
-
-    private fun initThreadsComputationRanges(factorialArgument: Int) {
-        val computationRangeSize = factorialArgument / numberOfThreads
+    private fun getThreadsComputationRanges(threads: Int, factorialArgument: Int): List<ComputationRange> {
+        val computationRanges = mutableListOf<ComputationRange>()
+        val computationRangeSize = factorialArgument / threads
 
         var nextComputationRangeEnd = factorialArgument.toLong()
-        for (i in numberOfThreads - 1 downTo 0) {
-            threadsComputationRanges[i] = ComputationRange(
-                nextComputationRangeEnd - computationRangeSize + 1,
-                nextComputationRangeEnd
+        for (i in threads - 1 downTo 0) {
+            computationRanges.add(
+                ComputationRange(
+                    nextComputationRangeEnd - computationRangeSize + 1,
+                    nextComputationRangeEnd
+                )
             )
-            nextComputationRangeEnd = threadsComputationRanges[i]!!.start - 1
+            nextComputationRangeEnd = computationRanges.last().start - 1
         }
 
         // add potentially "remaining" values to first thread's range
-        threadsComputationRanges[0] = ComputationRange(1, threadsComputationRanges[0]!!.end)
+        computationRanges[0] = ComputationRange(1, computationRanges[0].end)
+        return computationRanges
     }
 
-    private fun CoroutineScope.startComputation(): List<Deferred<BigInteger>> {
-        val deferredComputationResults = mutableListOf<Deferred<BigInteger>>()
-        for (i in 0 until numberOfThreads) {
-            deferredComputationResults.add(async(Dispatchers.IO) {
-                val rangeStart = threadsComputationRanges[i]!!.start
-                val rangeEnd = threadsComputationRanges[i]!!.end
+    private fun CoroutineScope.startComputation(computationRanges: List<ComputationRange>): List<Deferred<BigInteger>> {
+        return computationRanges.map { range ->
+            async(Dispatchers.IO) {
                 var product = BigInteger("1")
-                for (num in rangeStart..rangeEnd) {
-                    if (isTimedOut()) {
-                        break
-                    }
+                for (num in range.start..range.end) {
                     product = product.multiply(BigInteger(num.toString()))
                 }
                 product
-            })
-        }
-
-        return deferredComputationResults
-    }
-
-    @WorkerThread
-    private fun processComputationResults(rangeResults: List<BigInteger>): String {
-        if (isTimedOut()) {
-            return "Computation timed out"
-        }
-
-        return computeFinalResult(rangeResults)
-    }
-
-    @WorkerThread
-    private fun computeFinalResult(rangeResults: List<BigInteger>): String {
-        val result = rangeResults.fold(BigInteger.valueOf(1)) { acc, x ->
-            if (isTimedOut()) {
-                return "Computation timed out"
             }
+        }
+    }
+
+    private fun processComputationResults(rangeResults: List<BigInteger>): Result {
+        val result = rangeResults.fold(BigInteger.valueOf(1)) { acc, x ->
             acc.multiply(x)
         }
-
-        return result.toString()
+        return Result.Success(result)
     }
-
-    private fun remainingMillisToTimeout(): Long {
-        return computationTimeoutTime - System.currentTimeMillis()
-    }
-
-    private fun isTimedOut(): Boolean {
-        return System.currentTimeMillis() >= computationTimeoutTime
-    }
-
 
     private data class ComputationRange(val start: Long, val end: Long)
 }
